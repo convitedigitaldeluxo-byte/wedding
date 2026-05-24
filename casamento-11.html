@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daniel & Ngoc Anh 💍</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: #1a1a1a; overflow-x: hidden; }
+
+  #splash {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f0e8;
+    overflow: hidden;
+  }
+  #splash img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+  }
+  #splashBtn {
+    position: absolute;
+    left: 38%;
+    right: 38%;
+    top: 24%;
+    bottom: 62%;
+    cursor: pointer;
+    background: transparent;
+    border-radius: 50%;
+    z-index: 10;
+  }
+  #splash.opening {
+    animation: openEnvelope 0.8s ease forwards;
+  }
+  @keyframes openEnvelope {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.05); }
+  }
+
+  #content { display: none; }
+  #content.show { display: block; }
+
+  #musicBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+    background: rgba(180,160,120,0.92);
+    border: none;
+    border-radius: 50%;
+    width: 54px;
+    height: 54px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(180,160,120,0.5);
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s;
+  }
+  #musicBtn:hover { transform: scale(1.1); }
+  #musicBtn.playing { animation: pulse 2s infinite; }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 4px 15px rgba(180,160,120,0.5); }
+    50% { box-shadow: 0 4px 30px rgba(180,160,120,0.95); }
+  }
+
+  .img-section {
+    width: 100%;
+    position: relative;
+    line-height: 0;
+  }
+  .img-section img {
+    width: 100%;
+    display: block;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .img-section img.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .overlay-link {
+    position: absolute;
+    left: 20%;
+    right: 20%;
+    background: transparent;
+    cursor: pointer;
+    z-index: 10;
+    text-decoration: none;
+    display: block;
+    border-radius: 50%;
+  }
+  .overlay-confirmar   { top: 3%;  bottom: 67%; }
+  .overlay-localizacao { top: 35%; bottom: 34%; }
+  .overlay-hotel       { top: 66%; bottom: 3%;  }
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <img src="https://archive.org/download/2_20260523_20260523_1441/1.png" alt="Abrir Convite">
+  <div id="splashBtn" onclick="abrirConvite()"></div>
+</div>
+
+<audio id="bgMusic" loop preload="auto">
+  <source src="https://archive.org/download/edward-elgar-salut-d-amour-op.-12/Edward%20Elgar%20-%20Salut%20d%27Amour%20Op.12.mp3" type="audio/mpeg">
+</audio>
+
+<button id="musicBtn" onclick="toggleMusic()" title="Tocar música" style="display:none;">🎵</button>
+
+<div id="content">
+  <div class="img-section"><img src="https://archive.org/download/2_20260523_20260523_1441/2.png" alt="Convite"></div>
+  <div class="img-section"><img src="https://archive.org/download/2_20260523_20260523_1441/3.png" alt="Convite"></div>
+  <div class="img-section"><img src="https://archive.org/download/2_20260523_20260523_1441/4.png" alt="Convite"></div>
+  <div class="img-section"><img src="https://archive.org/download/2_20260523_20260523_1441/5.png" alt="Convite"></div>
+
+  <!-- IMAGEM 6 — 3 links transparentes -->
+  <div class="img-section">
+    <img src="https://archive.org/download/2_20260523_20260523_1441/6.png" alt="Convite">
+    <a href="https://wa.link/5kuk3h" target="_blank" class="overlay-link overlay-confirmar" title="Confirmar Presença"></a>
+    <a href="https://maps.app.goo.gl/uwHurwew95PJijVa6" target="_blank" class="overlay-link overlay-localizacao" title="Ver Localização"></a>
+    <a href="https://www.lottehotel.com/global/en" target="_blank" class="overlay-link overlay-hotel" title="Site do Hotel"></a>
+  </div>
+
+  <div class="img-section"><img src="https://archive.org/download/2_20260523_20260523_1441/7.png" alt="Convite"></div>
+  <div class="img-section"><img src="https://archive.org/download/2_20260523_20260523_1441/8.png" alt="Convite"></div>
+</div>
+
+<script>
+  const music = document.getElementById('bgMusic');
+  const btn = document.getElementById('musicBtn');
+  let started = false;
+
+  function abrirConvite() {
+    const splash = document.getElementById('splash');
+    const content = document.getElementById('content');
+    splash.classList.add('opening');
+    setTimeout(() => {
+      splash.style.display = 'none';
+      content.classList.add('show');
+      btn.style.display = 'flex';
+      window.scrollTo(0, 0);
+      music.currentTime = 0;
+      music.play().then(() => {
+        started = true;
+        btn.textContent = '🔊';
+        btn.classList.add('playing');
+      }).catch(() => {});
+      document.querySelectorAll('.img-section img').forEach(el => observer.observe(el));
+    }, 800);
+  }
+
+  function toggleMusic() {
+    if (music.paused) {
+      music.play().then(() => {
+        btn.textContent = '🔊';
+        btn.classList.add('playing');
+      });
+    } else {
+      music.pause();
+      btn.textContent = '🎵';
+      btn.classList.remove('playing');
+    }
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.05 });
+</script>
+</body>
+</html>
